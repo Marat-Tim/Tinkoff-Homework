@@ -13,7 +13,6 @@ public class InMemoryVectorRepository implements VectorRepository {
     }
 
     @Override
-    @SuppressWarnings("")
     public Collection<Named<Vector3d>> getAll() {
         //noinspection Convert2Diamond
         return vectors.entrySet()
