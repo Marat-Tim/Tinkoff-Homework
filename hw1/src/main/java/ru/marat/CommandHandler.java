@@ -1,5 +1,6 @@
 package ru.marat;
 
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,8 @@ public class CommandHandler {
         commands.put("/range", new RangeCommand(vectorRepository));
         commands.put("/angle", new AngleCommand(vectorRepository));
         commands.put("/product", new ProductCommand(vectorRepository));
+        commands.put("/save", new SaveCommand(vectorRepository));
+        commands.put("/load", new LoadCommand(vectorRepository));
     }
 
     public void start() {
@@ -31,6 +34,10 @@ public class CommandHandler {
                     System.out.println("Вектора с таким именем не существует");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Неправильное количество аргументов");
+                } catch (UncheckedIOException e) {
+                    System.out.println(e.getMessage());
+                } catch (NumberFormatException e) {
+                    System.out.println("Значение вектора должно быть числом");
                 }
             } else {
                 System.out.println("Неправильная команда");

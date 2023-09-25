@@ -54,4 +54,12 @@ public record Vector3d(double x, double y, double z) {
     public String toString() {
         return "(%s, %s, %s)".formatted(x, y, z);
     }
+
+    public static Vector3d parseVector3d(String text) throws IllegalArgumentException {
+        var xyz = text.substring(1, text.length() - 1).split(", ");
+        return new Vector3d(
+                Double.parseDouble(xyz[0]),
+                Double.parseDouble(xyz[1]),
+                Double.parseDouble(xyz[2]));
+    }
 }
