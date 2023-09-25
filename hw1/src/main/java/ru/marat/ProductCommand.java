@@ -9,13 +9,17 @@ public class ProductCommand implements Command {
 
     @Override
     public void handle(String[] args) {
-        var vector1 = vectorRepository.getByName(args[1]);
-        var vector2 = vectorRepository.getByName(args[2]);
-        if ("dot".equals(args[0])) {
-            handleDot(vector1, vector2);
-        }
-        if ("cross".equals(args[0])) {
-            handleCross(vector1, vector2);
+        try {
+            ArgsUtils.checkArgsSize(args, 3);
+            var vector1 = vectorRepository.getByName(args[1]);
+            var vector2 = vectorRepository.getByName(args[2]);
+            switch (args[0]) {
+                case "dot" -> handleDot(vector1, vector2);
+                case "cross" -> handleCross(vector1, vector2);
+                default -> System.out.println("Неправильный тип произведения(должен быть dot или cross)");
+            }
+        } catch (NameNotFoundException | IncorrectArgSizeException e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
 

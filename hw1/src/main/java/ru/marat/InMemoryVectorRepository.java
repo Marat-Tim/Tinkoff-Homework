@@ -20,10 +20,11 @@ public class InMemoryVectorRepository implements VectorRepository {
     }
 
     @Override
-    public Vector3d getByName(String name){
-        if (!vectors.containsKey(name)) {
-            throw new NameNotFoundException();
+    public Vector3d getByName(String name) throws NameNotFoundException {
+        var value = vectors.get(name);
+        if (value == null) {
+            throw new NameNotFoundException("Вектор с именем %s не существует".formatted(name));
         }
-        return vectors.get(name);
+        return value;
     }
 }

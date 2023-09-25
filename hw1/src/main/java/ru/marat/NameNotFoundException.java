@@ -1,4 +1,7 @@
 package ru.marat;
 
-public class NameNotFoundException extends RuntimeException {
+public class NameNotFoundException extends Exception {
+    public NameNotFoundException(String message) {
+        super(message);
+    }
 }

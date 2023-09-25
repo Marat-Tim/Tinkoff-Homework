@@ -9,8 +9,13 @@ public class GetAllCommand implements Command {
 
     @Override
     public void handle(String[] args) {
-        for (Named<Vector3d> namedVector3d : vectorRepository.getAll()) {
-            System.out.printf("%s: %s\n", namedVector3d.name(), namedVector3d.object());
+        try {
+            ArgsUtils.checkArgsSize(args, 0);
+            for (Named<Vector3d> namedVector3d : vectorRepository.getAll()) {
+                System.out.printf("%s: %s\n", namedVector3d.name(), namedVector3d.object());
+            }
+        } catch (IncorrectArgSizeException e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
 }

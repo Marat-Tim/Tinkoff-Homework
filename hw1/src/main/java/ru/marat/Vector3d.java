@@ -2,6 +2,7 @@ package ru.marat;
 
 /**
  * Трехмерный неизменяемый вектор
+ *
  * @param x Первая координата
  * @param y Вторая координата
  * @param z Третья координата
@@ -9,6 +10,7 @@ package ru.marat;
 public record Vector3d(double x, double y, double z) {
     /**
      * Длина вектора
+     *
      * @return Длина вектора
      */
     public double length() {
@@ -18,6 +20,7 @@ public record Vector3d(double x, double y, double z) {
     /**
      * Возвращает минимальный угол между двумя векторами по формуле<br>
      * angle = acos((v1 * v2) / (|v1| * |v2|)), * - скалярное произведение
+     *
      * @param other Вектор с которым нужно найти минимальный угол
      * @return Угол между двумя векторами
      */
@@ -28,6 +31,7 @@ public record Vector3d(double x, double y, double z) {
     /**
      * Возвращает скалярное произведение двух векторов по формуле<br>
      * result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+     *
      * @param other Вектор на который нужно умножить
      * @return Скалярное произведение двух векторов
      */
@@ -40,6 +44,7 @@ public record Vector3d(double x, double y, double z) {
      * result.x = v1.y * v2.z - v1.z * v2.y<br>
      * result.y = v1.z * v2.x - v1.x * v2.z<br>
      * result.z = v1.x * v2.y - v1.y * v2.x
+     *
      * @param other Вектор на который нужно умножить
      * @return Векторное произведение двух векторов
      */
@@ -57,6 +62,9 @@ public record Vector3d(double x, double y, double z) {
 
     public static Vector3d parseVector3d(String text) throws IllegalArgumentException {
         var xyz = text.substring(1, text.length() - 1).split(", ");
+        if (xyz.length != 3) {
+            throw new IllegalArgumentException("Неправильный формат строки");
+        }
         return new Vector3d(
                 Double.parseDouble(xyz[0]),
                 Double.parseDouble(xyz[1]),
