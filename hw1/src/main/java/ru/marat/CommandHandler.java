@@ -1,5 +1,8 @@
 package ru.marat;
 
+import ru.marat.command.*;
+import ru.marat.repository.VectorRepository;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

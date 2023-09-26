@@ -1,4 +1,7 @@
-package ru.marat;
+package ru.marat.repository;
+
+import ru.marat.Vector3d;
+import ru.marat.exception.NameNotFoundException;
 
 import java.util.Collection;
 import java.util.HashMap;

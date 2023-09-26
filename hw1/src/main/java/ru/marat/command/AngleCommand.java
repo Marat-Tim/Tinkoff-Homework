@@ -1,4 +1,8 @@
-package ru.marat;
+package ru.marat.command;
+
+import ru.marat.exception.IncorrectArgSizeException;
+import ru.marat.exception.NameNotFoundException;
+import ru.marat.repository.VectorRepository;
 
 public class AngleCommand implements Command {
     private final VectorRepository vectorRepository;

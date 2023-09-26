@@ -1,6 +1,9 @@
 package ru.marat;
 
-public class Main {
+import ru.marat.repository.InMemoryVectorRepository;
+import ru.marat.repository.VectorRepository;
+
+class Main {
     public static void main(String[] args) {
         VectorRepository vectorRepository = new InMemoryVectorRepository();
         try {

@@ -1,4 +1,9 @@
-package ru.marat;
+package ru.marat.command;
+
+import ru.marat.exception.IncorrectArgSizeException;
+import ru.marat.repository.Named;
+import ru.marat.Vector3d;
+import ru.marat.repository.VectorRepository;
 
 public class GetAllCommand implements Command {
     private final VectorRepository vectorRepository;

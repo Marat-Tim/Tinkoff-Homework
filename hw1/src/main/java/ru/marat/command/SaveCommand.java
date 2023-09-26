@@ -1,4 +1,7 @@
-package ru.marat;
+package ru.marat.command;
+
+import ru.marat.exception.IncorrectArgSizeException;
+import ru.marat.repository.VectorRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;

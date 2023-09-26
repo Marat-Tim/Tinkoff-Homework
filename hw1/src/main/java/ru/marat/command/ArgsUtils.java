@@ -1,6 +1,8 @@
-package ru.marat;
+package ru.marat.command;
 
-public class ArgsUtils {
+import ru.marat.exception.IncorrectArgSizeException;
+
+class ArgsUtils {
     private ArgsUtils() {
     }
 
