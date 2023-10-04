@@ -12,16 +12,18 @@ public class ProductCommand implements Command {
     public ProductCommand(VectorRepository vectorRepository) {
         commands.put("dot", new DotProductCommand(vectorRepository));
         commands.put("cross", new CrossProductCommand(vectorRepository));
+        commands.put("triple", new TripleProductCommand(vectorRepository));
     }
 
     @Override
     public void handle(String[] args) {
         String command = args[0];
         String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-        if (!commands.containsKey(command)) {
+        if (commands.containsKey(command)) {
+            commands.get(command).handle(newArgs);
+        } else {
             System.out.println("Неправильный тип произведения(должен быть " +
                     String.join(" или ", commands.keySet()) + ")");
         }
-        commands.get(command).handle(newArgs);
     }
 }

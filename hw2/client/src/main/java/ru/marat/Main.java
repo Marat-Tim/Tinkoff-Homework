@@ -1,4 +1,4 @@
-package ru.marattim;
+package ru.marat;
 
 public class Main {
     public static void main(String[] args) {
