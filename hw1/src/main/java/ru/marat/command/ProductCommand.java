@@ -1,38 +1,27 @@
 package ru.marat.command;
 
-import ru.marat.exception.IncorrectArgSizeException;
-import ru.marat.exception.NameNotFoundException;
-import ru.marat.Vector3d;
 import ru.marat.repository.VectorRepository;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProductCommand implements Command {
-    private final VectorRepository vectorRepository;
+    private final Map<String, Command> commands = new HashMap<>();
 
     public ProductCommand(VectorRepository vectorRepository) {
-        this.vectorRepository = vectorRepository;
+        commands.put("dot", new DotProductCommand(vectorRepository));
+        commands.put("cross", new CrossProductCommand(vectorRepository));
     }
 
     @Override
     public void handle(String[] args) {
-        try {
-            ArgsUtils.checkArgsSize(args, 3);
-            var vector1 = vectorRepository.getByName(args[1]);
-            var vector2 = vectorRepository.getByName(args[2]);
-            switch (args[0]) {
-                case "dot" -> handleDot(vector1, vector2);
-                case "cross" -> handleCross(vector1, vector2);
-                default -> System.out.println("Неправильный тип произведения(должен быть dot или cross)");
-            }
-        } catch (NameNotFoundException | IncorrectArgSizeException e) {
-            System.out.println(e.getLocalizedMessage());
+        String command = args[0];
+        String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+        if (!commands.containsKey(command)) {
+            System.out.println("Неправильный тип произведения(должен быть " +
+                    String.join(" или ", commands.keySet()) + ")");
         }
-    }
-
-    private void handleCross(Vector3d vector1, Vector3d vector2) {
-        System.out.println(vector1.cross(vector2));
-    }
-
-    private void handleDot(Vector3d vector1, Vector3d vector2) {
-        System.out.println(vector1.dot(vector2));
+        commands.get(command).handle(newArgs);
     }
 }
