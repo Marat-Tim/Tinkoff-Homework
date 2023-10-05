@@ -27,8 +27,6 @@ public class CommandHandler {
         commands.put("/product", new ProductCommand(out, vectorRepository));
         commands.put("/save", new SaveCommand(out, vectorRepository));
         commands.put("/load", new LoadCommand(out, vectorRepository));
-        commands.put("/exit", args -> {
-        });
     }
 
     public void start() {
@@ -44,7 +42,6 @@ public class CommandHandler {
             } else {
                 out.println("Неправильная команда");
             }
-            out.println();
             out.flush();
         } while (!command.equals("/exit"));
     }
