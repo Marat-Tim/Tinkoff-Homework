@@ -1,5 +1,6 @@
 package ru.marat.command;
 
+import ru.marat.VectorRepositorySaver;
 import ru.marat.exception.IncorrectArgSizeException;
 import ru.marat.repository.VectorRepository;
 
@@ -22,11 +23,7 @@ public class SaveCommand implements Command {
     public void handle(String[] args) {
         try {
             ArgsUtils.checkArgsSize(args, 1);
-            StringBuilder sb = new StringBuilder();
-            for (var namedVector : vectorRepository.getAll()) {
-                sb.append("%s|%s\n".formatted(namedVector.name(), namedVector.object()));
-            }
-            Files.writeString(Path.of(args[0]), sb.toString());
+            new VectorRepositorySaver(vectorRepository).save(Path.of(args[0]));
             out.println("Векторы сохранены в файл");
         } catch (IncorrectArgSizeException e) {
             out.println(e.getLocalizedMessage());

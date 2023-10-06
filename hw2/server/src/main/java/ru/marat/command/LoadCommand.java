@@ -1,6 +1,7 @@
 package ru.marat.command;
 
 import ru.marat.Vector3d;
+import ru.marat.VectorRepositorySaver;
 import ru.marat.exception.IncorrectArgSizeException;
 import ru.marat.repository.VectorRepository;
 
@@ -23,14 +24,7 @@ public class LoadCommand implements Command {
     public void handle(String[] args) {
         try {
             ArgsUtils.checkArgsSize(args, 1);
-            var lines = Files.readAllLines(Path.of(args[0]));
-            for (var line : lines) {
-                var splitLine = line.split("\\|");
-                if (splitLine.length != 2) {
-                    throw new IOException("Неправильный формат данных в файле");
-                }
-                vectorRepository.addVector(splitLine[0], Vector3d.parseVector3d(splitLine[1]));
-            }
+            new VectorRepositorySaver(vectorRepository).load(Path.of(args[0]));
             out.println("Векторы из файла добавлены в коллекцию");
         } catch (IOException e) {
             out.printf("Не получилось считать векторы из файла\nОшибка: %s\n", e);
