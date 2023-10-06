@@ -28,7 +28,7 @@ public class Server {
                     System.out.println("Новый клиент подключился");
                     VectorRepository vectorRepository = new InMemoryVectorRepository();
                     new CommandHandler(
-                            client.getInputStream(),
+                            new LoggingInputStream(client.getInputStream(), System.out),
                             out,
                             vectorRepository).start();
                 } catch (NoSuchElementException e) {
