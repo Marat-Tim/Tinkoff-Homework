@@ -1,7 +1,6 @@
 package ru.marat.repository;
 
 import ru.marat.Vector3d;
-import ru.marat.VectorRepositorySaver;
 import ru.marat.exception.NameNotFoundException;
 
 import java.io.IOException;

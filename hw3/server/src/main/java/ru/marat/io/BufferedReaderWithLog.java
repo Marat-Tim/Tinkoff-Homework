@@ -1,4 +1,4 @@
-package ru.marat;
+package ru.marat.io;
 
 import lombok.extern.log4j.Log4j2;
 

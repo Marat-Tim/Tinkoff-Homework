@@ -1,6 +1,6 @@
-package ru.marat;
+package ru.marat.repository;
 
-import ru.marat.repository.VectorRepository;
+import ru.marat.Vector3d;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +16,7 @@ public class VectorRepositorySaver {
     public void save(Path pathToFile) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (var namedVector : vectorRepository.getAll()) {
-            sb.append("%s|%s\n".formatted(namedVector.name(), namedVector.object()));
+            sb.append("%s|%s%n".formatted(namedVector.name(), namedVector.object()));
         }
         Files.writeString(pathToFile, sb.toString());
     }

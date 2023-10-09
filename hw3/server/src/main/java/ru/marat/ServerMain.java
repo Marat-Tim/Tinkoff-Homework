@@ -3,6 +3,8 @@ package ru.marat;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import ru.marat.io.BufferedReaderWithLog;
+import ru.marat.io.ServerPrintStream;
 import ru.marat.repository.InMemoryVectorRepository;
 import ru.marat.repository.SaveToFileDecorator;
 

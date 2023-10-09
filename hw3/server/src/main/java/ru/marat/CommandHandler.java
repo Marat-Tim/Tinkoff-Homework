@@ -1,6 +1,7 @@
 package ru.marat;
 
 import ru.marat.command.*;
+import ru.marat.io.ServerPrintStream;
 import ru.marat.repository.VectorRepository;
 
 import java.io.BufferedReader;

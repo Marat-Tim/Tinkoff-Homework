@@ -1,6 +1,6 @@
 package ru.marat.command;
 
-import ru.marat.VectorRepositorySaver;
+import ru.marat.repository.VectorRepositorySaver;
 import ru.marat.exception.IncorrectArgSizeException;
 import ru.marat.repository.VectorRepository;
 

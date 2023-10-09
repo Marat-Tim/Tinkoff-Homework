@@ -1,4 +1,4 @@
-package ru.marat;
+package ru.marat.io;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
