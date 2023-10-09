@@ -3,13 +3,12 @@ package ru.marat;
 import ru.marat.repository.InMemoryVectorRepository;
 import ru.marat.repository.SaveToFileDecorator;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
-import java.util.NoSuchElementException;
 
 public class ServerMain {
     private static final Path pathToFile = Path.of("file.txt");
@@ -23,21 +22,27 @@ public class ServerMain {
         throw new IllegalArgumentException("Неправильное количество аргументов");
     }
 
-    private static void processClient(PrintStream out, InputStream in, SaveToFileDecorator vectorRepository) {
+    private static void processClient(ServerPrintStream out,
+                                      BufferedReader reader,
+                                      SaveToFileDecorator vectorRepository) throws IOException {
         System.out.println("Новый клиент подключился");
-        new CommandHandler(in, out, vectorRepository).start();
+        new CommandHandler(reader, out, vectorRepository).start();
     }
 
     private static void startProcessClients(ServerSocket socket) {
         //noinspection InfiniteLoopStatement
         while (true) {
             try (Socket client = socket.accept();
-                 PrintStream out = new PrintStream(client.getOutputStream());
-                 InputStream in = new LoggingInputStream(client.getInputStream(), System.out);
+                 ServerPrintStream out = new ServerPrintStream(client.getOutputStream());
+                 BufferedReader scanner =
+                         new BufferedReaderWithLog(
+                                 new InputStreamReader(client.getInputStream()),
+                                 System.out,
+                                 client);
                  SaveToFileDecorator vectorRepository =
                          new SaveToFileDecorator(new InMemoryVectorRepository(), pathToFile)) {
-                processClient(out, in, vectorRepository);
-            } catch (NoSuchElementException e) {
+                processClient(out, scanner, vectorRepository);
+            } catch (NullPointerException e) {
                 System.out.printf("Пропало соединение с клиентом%n%s%n", e);
             } catch (IOException e) {
                 System.out.printf("%s%n%s%n", e.getLocalizedMessage(), e.getCause());

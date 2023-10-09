@@ -46,11 +46,11 @@ public class Client {
                 }
                 return;
             } catch (IOException | NoSuchElementException e) {
-                System.out.printf("Нет соединения с сервером %s\n", e);
+                System.out.printf("Нет соединения с сервером %s%n", e);
+                System.out.println(
+                        "Если хотите выйти напишите /exit. Если хотите переподключиться к серверу нажмите enter");
+                command = scanner.nextLine();
             }
-            System.out.println(
-                    "Если хотите выйти напишите /exit. Если хотите переподключиться к серверу нажмите enter");
-            command = scanner.nextLine();
         }
     }
 }
