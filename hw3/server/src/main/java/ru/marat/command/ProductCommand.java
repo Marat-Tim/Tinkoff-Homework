@@ -1,32 +1,24 @@
 package ru.marat.command;
 
-import ru.marat.repository.VectorRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
+@Component("/product")
+@RequiredArgsConstructor
 public class ProductCommand implements Command {
-    private final PrintStream out;
-
-    private final Map<String, Command> commands = new HashMap<>();
-
-    public ProductCommand(PrintStream out, VectorRepository vectorRepository) {
-        this.out = out;
-        commands.put("dot", new DotProductCommand(out, vectorRepository));
-        commands.put("cross", new CrossProductCommand(out, vectorRepository));
-        commands.put("triple", new TripleProductCommand(out, vectorRepository));
-    }
+    private final Map<String, ProductCommandInterface> commands;
 
     @Override
-    public void handle(String[] args) {
+    public String handle(String[] args) {
         String command = args[0];
         String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
         if (!commands.containsKey(command)) {
-            out.println("Неправильный тип произведения(должен быть " +
-                    String.join(" или ", commands.keySet()) + ")");
+            return "Неправильный тип произведения(должен быть " +
+                    String.join(" или ", commands.keySet()) + ")";
         }
-        commands.get(command).handle(newArgs);
+        return commands.get(command).handle(newArgs);
     }
 }

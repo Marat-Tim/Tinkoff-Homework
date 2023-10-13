@@ -1,33 +1,31 @@
 package ru.marat.command;
 
-import ru.marat.repository.VectorRepositorySaver;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.marat.exception.IncorrectArgSizeException;
 import ru.marat.repository.VectorRepository;
+import ru.marat.repository.VectorRepositorySaver;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Path;
 
+@Component("/load")
+@RequiredArgsConstructor
 public class LoadCommand implements Command {
-    private final PrintStream out;
-
     private final VectorRepository vectorRepository;
 
-    public LoadCommand(PrintStream out, VectorRepository vectorRepository) {
-        this.out = out;
-        this.vectorRepository = vectorRepository;
-    }
+    private final VectorRepositorySaver vectorRepositorySaver;
 
     @Override
-    public void handle(String[] args) {
+    public String handle(String[] args) {
         try {
             ArgsUtils.checkArgsSize(args, 1);
-            new VectorRepositorySaver(vectorRepository).load(Path.of(args[0]));
-            out.println("Векторы из файла добавлены в коллекцию");
+            vectorRepositorySaver.load(vectorRepository, Path.of(args[0]));
+            return "Векторы из файла добавлены в коллекцию";
         } catch (IOException e) {
-            out.printf("Не получилось считать векторы из файла%nОшибка: %s%n", e);
+            return "Не получилось считать векторы из файла%nОшибка: %s".formatted(e);
         } catch (IncorrectArgSizeException | IllegalArgumentException e) {
-            out.println(e.getLocalizedMessage());
+            return e.getLocalizedMessage();
         }
     }
 }

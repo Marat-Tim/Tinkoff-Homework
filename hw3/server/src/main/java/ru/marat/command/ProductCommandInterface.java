@@ -1,5 +1,5 @@
 package ru.marat.command;
 
-public interface Command {
+public interface ProductCommandInterface {
     String handle(String[] args);
 }

@@ -1,7 +1,6 @@
 package ru.marat;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -31,15 +30,16 @@ public class Client {
         String command = "";
         while (!"/exit".equals(command)) {
             try (Socket socket = new Socket(getHost(args), getPort(args));
-                 PrintStream out = new PrintStream(socket.getOutputStream());
-                 Scanner in = new Scanner(socket.getInputStream())) {
+                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 System.out.println("Соединение с сервером установлено. Можете вводить команды");
                 String line = scanner.nextLine();
                 while (!"/exit".equals(line)) {
-                    out.println(line);
+                    out.write(line);
+                    out.newLine();
                     out.flush();
                     String response;
-                    while (!(response = in.nextLine()).isEmpty()) {
+                    while (!(response = in.readLine()).isEmpty()) {
                         System.out.println(response);
                     }
                     line = scanner.nextLine();

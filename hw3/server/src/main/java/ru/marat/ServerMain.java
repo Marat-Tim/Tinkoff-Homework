@@ -1,69 +1,62 @@
 package ru.marat;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import ru.marat.command.Command;
 import ru.marat.io.BufferedReaderWithLog;
 import ru.marat.io.ServerPrintStream;
-import ru.marat.repository.InMemoryVectorRepository;
-import ru.marat.repository.SaveToFileDecorator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Path;
+import java.net.SocketException;
 
+@SpringBootApplication
 @Log4j2
 public class ServerMain implements CommandLineRunner {
-    private static final Path pathToFile = Path.of("file.txt");
+    private final ApplicationContext context;
 
-    private static int getPort(String[] args) {
-        if (args.length == 1) {
-            return Integer.parseInt(args[0]);
-        } else if (args.length == 0) {
-            return 8080;
+    private final int port;
+
+    public ServerMain(ApplicationContext context, @Value("${port:8080}") int port) {
+        this.context = context;
+        this.port = port;
+    }
+
+    @Override
+    public void run(String... args) {
+        try (ServerSocket server = new ServerSocket(port)) {
+            log.info("Сервер начал работу на сокете {}", server);
+            processClients(server);
+        } catch (IOException e) {
+            log.error("Не получилось запустить серверный сокет", e);
         }
-        throw new IllegalArgumentException("Неправильное количество аргументов");
     }
 
-    private static void processClient(ServerPrintStream out,
-                                      BufferedReader reader,
-                                      SaveToFileDecorator vectorRepository) throws IOException {
-        new CommandHandler(reader, out, vectorRepository).start();
-    }
-
-    private static void startProcessClients(ServerSocket socket) {
+    private void processClients(ServerSocket server) {
+        var commands = context.getBeansOfType(Command.class);
         //noinspection InfiniteLoopStatement
         while (true) {
-            try (Socket client = socket.accept();
-                 ServerPrintStream out = new ServerPrintStream(client.getOutputStream());
-                 BufferedReader scanner =
-                         new BufferedReaderWithLog(new InputStreamReader(client.getInputStream()));
-                 SaveToFileDecorator vectorRepository =
-                         new SaveToFileDecorator(new InMemoryVectorRepository(), pathToFile)) {
-                log.info("Новый клиент {} подключился", client);
-                processClient(out, scanner, vectorRepository);
-            } catch (NullPointerException e) {
-                log.info("Пропало соединение с клиентом", e);
+            try (Socket client = server.accept();
+                 ServerPrintStream writer = new ServerPrintStream(client.getOutputStream());
+                 BufferedReader reader = new BufferedReaderWithLog(new InputStreamReader(client.getInputStream()))) {
+                log.info("Пользователь {} подключился", client);
+                new CommandHandler(writer, reader, commands).start();
+            } catch (NullPointerException | SocketException e) {
+                log.info("Пропало соединение с клиентом");
             } catch (IOException e) {
-                log.error(e, e.getCause());
+                log.error(e);
             }
         }
     }
 
     public static void main(String[] args) {
         SpringApplication.run(ServerMain.class, args);
-    }
-
-    @Override
-    public void run(String... args) {
-        try (ServerSocket socket = new ServerSocket(getPort(args))) {
-            log.info("Сокет {} начал работу", socket);
-            startProcessClients(socket);
-        } catch (IOException e) {
-            log.error("Не получилось запустить сервер", e);
-        }
     }
 }
