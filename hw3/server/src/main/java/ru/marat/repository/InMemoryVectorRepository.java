@@ -30,4 +30,9 @@ public class InMemoryVectorRepository implements VectorRepository {
         }
         return value;
     }
+
+    @Override
+    public void deleteByName(String name) throws NameNotFoundException {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -44,6 +44,11 @@ public class SavingToFileVectorRepositoryDecorator implements VectorRepository, 
     }
 
     @Override
+    public void deleteByName(String name) throws NameNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void close() throws IOException {
         try {
             vectorRepositorySaver.save(vectorRepository, pathToFile);

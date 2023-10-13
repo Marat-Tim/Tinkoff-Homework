@@ -2,6 +2,7 @@ package ru.marat.repository;
 
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import ru.marat.Vector3d;
 import ru.marat.exception.NameNotFoundException;
@@ -14,6 +15,7 @@ import java.util.Collection;
 
 @Repository
 @RequiredArgsConstructor
+@Log4j2
 public class PostgresVectorRepository implements VectorRepository {
     private final DataSource dataSource;
 
@@ -26,11 +28,15 @@ public class PostgresVectorRepository implements VectorRepository {
             """;
 
     private static final String SELECT_ALL_SQL = """
-            SELECT name, x, y, z FROM vector
+            SELECT name, x, y, z FROM vector;
             """;
 
     private static final String SELECT_ONE_SQL = """
-            SELECT name, x, y, z FROM vector WHERE name = ?
+            SELECT name, x, y, z FROM vector WHERE name = ?;
+            """;
+
+    private static final String DELETE_SQL = """
+            DELETE FROM vector WHERE name = ?;
             """;
 
     @Override
@@ -43,9 +49,8 @@ public class PostgresVectorRepository implements VectorRepository {
             statement.setDouble(4, vector3d.z());
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
-                throw new VectorRepositoryException(
-                        "При вставке элемента в базу данных было изменено %d строчек, а не 1"
-                                .formatted(affectedRows));
+                log.warn("При вставке элемента в базу данных было изменено {} строчек, а не 1",
+                        affectedRows);
             }
         } catch (SQLException e) {
             throw new VectorRepositoryException(e);
@@ -86,6 +91,23 @@ public class PostgresVectorRepository implements VectorRepository {
                         resultSet.getDouble("z"));
             } else {
                 throw NameNotFoundException.defaultException(name);
+            }
+        } catch (SQLException e) {
+            throw new VectorRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void deleteByName(String name) throws NameNotFoundException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
+            statement.setString(1, name);
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw NameNotFoundException.defaultException(name);
+            } else if (affectedRows != 1) {
+                log.warn("При удалении элемента из базы данных было изменено {} строчек, а не 1",
+                        affectedRows);
             }
         } catch (SQLException e) {
             throw new VectorRepositoryException(e);

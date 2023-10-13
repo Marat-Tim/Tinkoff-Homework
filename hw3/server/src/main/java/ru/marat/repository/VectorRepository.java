@@ -11,4 +11,6 @@ public interface VectorRepository {
     Collection<Named<Vector3d>> getAll();
 
     Vector3d getByName(String name) throws NameNotFoundException;
+
+    void deleteByName(String name) throws NameNotFoundException;
 }
