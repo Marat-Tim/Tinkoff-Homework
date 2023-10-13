@@ -27,8 +27,10 @@ public class PostgresVectorRepository implements VectorRepository {
             SET x = EXCLUDED.x, y = EXCLUDED.y, z = EXCLUDED.z;
             """;
 
-    private static final String SELECT_ALL_SQL = """
-            SELECT name, x, y, z FROM vector;
+    private static final String SELECT_PAGE_SQL = """
+            SELECT name, x, y, z FROM vector
+            LIMIT ?
+            OFFSET ?;
             """;
 
     private static final String SELECT_ONE_SQL = """
@@ -37,6 +39,10 @@ public class PostgresVectorRepository implements VectorRepository {
 
     private static final String DELETE_SQL = """
             DELETE FROM vector WHERE name = ?;
+            """;
+
+    private static final String SELECT_ALL_SQL = """
+            SELECT name, x, y, z FROM vector;
             """;
 
     @Override
@@ -58,21 +64,13 @@ public class PostgresVectorRepository implements VectorRepository {
     }
 
     @Override
-    public Collection<Named<Vector3d>> getAll() {
+    public Collection<Named<Vector3d>> getPage(int pageSize, int pageNumber) {
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SELECT_ALL_SQL)) {
-            Collection<Named<Vector3d>> result = new ArrayList<>();
-            while (resultSet.next()) {
-                result.add(new Named<>(resultSet.getString("name"),
-                        new Vector3d(
-                                resultSet.getDouble("x"),
-                                resultSet.getDouble("y"),
-                                resultSet.getDouble("z")
-                        )
-                ));
-            }
-            return result;
+             PreparedStatement statement = connection.prepareStatement(SELECT_PAGE_SQL)) {
+            statement.setInt(1, pageSize);
+            statement.setInt(2, pageNumber * pageSize);
+            @Cleanup ResultSet resultSet = statement.executeQuery();
+            return getNamedVectorsFromResultSet(resultSet);
         } catch (SQLException e) {
             throw new VectorRepositoryException(e);
         }
@@ -112,5 +110,30 @@ public class PostgresVectorRepository implements VectorRepository {
         } catch (SQLException e) {
             throw new VectorRepositoryException(e);
         }
+    }
+
+    @Override
+    public Collection<Named<Vector3d>> getAll() {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SELECT_ALL_SQL)) {
+            return getNamedVectorsFromResultSet(resultSet);
+        } catch (SQLException e) {
+            throw new VectorRepositoryException(e);
+        }
+    }
+
+    private Collection<Named<Vector3d>> getNamedVectorsFromResultSet(ResultSet resultSet) throws SQLException {
+        Collection<Named<Vector3d>> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(new Named<>(resultSet.getString("name"),
+                    new Vector3d(
+                            resultSet.getDouble("x"),
+                            resultSet.getDouble("y"),
+                            resultSet.getDouble("z")
+                    )
+            ));
+        }
+        return result;
     }
 }

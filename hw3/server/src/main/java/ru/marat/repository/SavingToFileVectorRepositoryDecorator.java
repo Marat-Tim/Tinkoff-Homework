@@ -34,6 +34,11 @@ public class SavingToFileVectorRepositoryDecorator implements VectorRepository, 
     }
 
     @Override
+    public Collection<Named<Vector3d>> getPage(int pageSize, int pageNumber) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Collection<Named<Vector3d>> getAll() {
         return vectorRepository.getAll();
     }

@@ -16,6 +16,11 @@ public class InMemoryVectorRepository implements VectorRepository {
     }
 
     @Override
+    public Collection<Named<Vector3d>> getPage(int pageSize, int pageNumber) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Collection<Named<Vector3d>> getAll() {
         //noinspection Convert2Diamond
         return vectors.entrySet()
