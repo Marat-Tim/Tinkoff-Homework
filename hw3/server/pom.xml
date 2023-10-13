@@ -15,6 +15,9 @@
 
         <lombok.version>1.18.30</lombok.version>
         <spring-boot-starter.version>3.1.4</spring-boot-starter.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <spring-boot-starter-jdbc.version>3.1.4</spring-boot-starter-jdbc.version>
+        <slf4j-api.version>2.0.5</slf4j-api.version>
     </properties>
 
     <dependencies>
@@ -26,11 +29,30 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>${spring-boot-starter-jdbc.version}</version>
+        </dependency>
+
+        <dependency>
             <!--все что угодно с lombok становится лучше-->
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

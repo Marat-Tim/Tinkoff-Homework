@@ -16,6 +16,9 @@ public class GetAllCommand implements Command {
             ArgsUtils.checkArgsSize(args, 0);
             StringBuilder sb = new StringBuilder();
             var vectors = vectorRepository.getAll().stream().toList();
+            if (vectors.isEmpty()) {
+                return "Пусто";
+            }
             for (int i = 0; i < vectors.size() - 1; i++) {
                 sb.append("%s: %s%n".formatted(vectors.get(i).name(), vectors.get(i).object()));
             }

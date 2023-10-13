@@ -1,6 +1,7 @@
 package ru.marat;
 
 import ru.marat.command.Command;
+import ru.marat.exception.VectorRepositoryException;
 import ru.marat.io.ServerPrintStream;
 
 import java.io.BufferedReader;
@@ -29,8 +30,12 @@ public class CommandHandler {
             command = splitLine[0];
             args = Arrays.copyOfRange(splitLine, 1, splitLine.length);
             if (commands.containsKey(command)) {
-                var tmp = commands.get(command).handle(args);
-                writer.println(tmp);
+                try {
+                    String tmp = commands.get(command).handle(args);
+                    writer.println(tmp);
+                } catch (VectorRepositoryException e) {
+                    writer.println(e.getLocalizedMessage());
+                }
             } else {
                 writer.println("Неправильная команда");
             }
