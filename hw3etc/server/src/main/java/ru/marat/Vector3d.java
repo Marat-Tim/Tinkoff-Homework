@@ -25,6 +25,9 @@ public record Vector3d(double x, double y, double z) {
      * @return Угол между двумя векторами
      */
     public double minAngleWith(Vector3d other) {
+        if (this.isZero() || other.isZero()) {
+            return 0;
+        }
         return Math.acos(this.dot(other) / (this.length() * other.length()));
     }
 
@@ -61,13 +64,28 @@ public record Vector3d(double x, double y, double z) {
     }
 
     public static Vector3d parseVector3d(String text) throws IllegalArgumentException {
+        if (text.length() < "(0, 0, 0)".length()) {
+            throw new IllegalArgumentException("Размер строки меньше минимального, " +
+                    "в строке должны быть скобки, пробелы после запятых и числа - \"(0, 0, 0)\"");
+        }
+        if (text.charAt(0) != '(' || text.charAt(text.length() - 1) != ')') {
+            throw new IllegalArgumentException("В начале и в конце строки должны быть круглые скобки");
+        }
         var xyz = text.substring(1, text.length() - 1).split(", ");
         if (xyz.length != 3) {
-            throw new IllegalArgumentException("Неправильный формат строки");
+            throw new IllegalArgumentException("В скобках должны быть 3 числа через запятую с пробелом");
         }
         return new Vector3d(
                 Double.parseDouble(xyz[0]),
                 Double.parseDouble(xyz[1]),
                 Double.parseDouble(xyz[2]));
+    }
+
+    private boolean isZero() {
+        return x == 0 && y == 0 && z == 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Vector3d.parseVector3d("1, 2, 3"));
     }
 }
