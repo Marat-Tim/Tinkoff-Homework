@@ -23,12 +23,10 @@ public class CommandHandler {
     }
 
     public void start() throws IOException {
-        String command;
-        String[] args;
-        do {
-            var splitLine = reader.readLine().split(" ");
-            command = splitLine[0];
-            args = Arrays.copyOfRange(splitLine, 1, splitLine.length);
+        String[] splitLine = reader.readLine().split(" ");
+        String command = splitLine[0];
+        String[] args = Arrays.copyOfRange(splitLine, 1, splitLine.length);
+        while (!command.equals("/exit")) {
             if (commands.containsKey(command)) {
                 try {
                     String tmp = commands.get(command).handle(args);
@@ -40,6 +38,10 @@ public class CommandHandler {
                 writer.println("Неправильная команда");
             }
             writer.sendToClient();
-        } while (!command.equals("/exit"));
+
+            splitLine = reader.readLine().split(" ");
+            command = splitLine[0];
+            args = Arrays.copyOfRange(splitLine, 1, splitLine.length);
+        }
     }
 }
