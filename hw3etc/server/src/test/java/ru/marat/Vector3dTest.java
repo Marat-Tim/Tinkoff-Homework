@@ -156,7 +156,6 @@ class Vector3dTest {
     @ParameterizedTest
     @ValueSource(strings = {"1, 2, 3", "(1, 2)", "(1, 2, 3, 4)", "hello", "{3, 2, 1}", ""})
     void parseWrongString(String wrongString) {
-        System.out.println(wrongString);
         assertThrows(IllegalArgumentException.class, () -> Vector3d.parseVector3d(wrongString));
     }
 }
