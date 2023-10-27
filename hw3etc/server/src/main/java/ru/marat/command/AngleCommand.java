@@ -17,7 +17,7 @@ public class AngleCommand implements Command {
             ArgsUtils.checkArgsSize(args, 2);
             var vector1 = vectorRepository.getByName(args[0]);
             var vector2 = vectorRepository.getByName(args[1]);
-            return "%s degrees".formatted(Math.toDegrees(vector1.minAngleWith(vector2)));
+            return "%s deg".formatted(Math.toDegrees(vector1.minAngleWith(vector2)));
         } catch (NameNotFoundException | IncorrectArgSizeException e) {
             return e.getLocalizedMessage();
         }
